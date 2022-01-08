@@ -40,6 +40,41 @@ app.get('/products', function (req, res) {
         pageData.content += '</tr>'
     }
     pageData.content += '</table>'
+    res.render('products', pageData)
+})
+
+app.get('/seasons', function (req, res) {
+    const pageData = {} // initialize empty object
+    pageData.title = 'Exercise 2'
+    pageData.description = 'EJS Template Engine'
+    pageData.author = 'Safaldeep Singh'
+    const navbarLinksData = [
+        { label: 'Home Page', link: '/' },
+        { label: 'Bye Bye', link: '/byebye' },
+        { label: 'chair', link: '/test-html' },
+        { label: 'form_post.html', link: '/form_post.html' },
+        { label: 'products', link: '/products' },
+        { label: 'seasons', link: '/seasons' }
+    ]
+    const seasons = [
+        { id: 1, name: 'Winter' },
+        { id: 2, name: 'Summer' },
+        { id: 3, name: 'Fall' },
+        { id: 3, name: 'Spring' }
+    ]
+    pageData.content = '<ol>'
+    for (let i = 0; i < seasons.length; i++) {
+        pageData.content += '<li>' + seasons[i].name + '</li>'
+    }
+    pageData.content += '</ol>'
+
+    pageData.navbarLinks = '<ul class="navbar-nav">'
+    for (let i = 0; i < navbarLinksData.length; i++) {
+        pageData.navbarLinks += '<li class="nav-item">'
+        pageData.navbarLinks += '<a class="nav-link" href="' + navbarLinksData[i].link + '">' + navbarLinksData[i].label + '</a>'
+        pageData.navbarLinks += '</li>'
+    }
+    pageData.navbarLinks += '</ul>'
     res.render('master_template', pageData)
 })
 
@@ -49,9 +84,9 @@ app.get('/',
         res.send('<h1>Hello World</h1>')
     }
 )
-app.get('/test',
+app.get('/byebye',
     function (req, res) {
-        res.send('<h1>Test</h1>')
+        res.send('<h1>Bye Bye</h1>')
     }
 )
 app.get('/test-html',
