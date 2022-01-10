@@ -21,6 +21,15 @@ app.use(express.static('public_html'))
 
 // use ejs template engine
 app.set('view engine', 'ejs')
+const navbarLinksData = [
+    { label: 'Home Page', link: '/' },
+    { label: 'Bye Bye', link: '/byebye' },
+    { label: 'chair', link: '/test-html' },
+    { label: 'form_post.html', link: '/form_post.html' },
+    { label: 'products', link: '/products' },
+    { label: 'seasons', link: '/seasons' },
+    { label: 'orders', link: '/orders' }
+]
 
 app.get('/products', function (req, res) {
     const pageData = {} // initialize empty object
@@ -40,7 +49,7 @@ app.get('/products', function (req, res) {
         pageData.content += '</tr>'
     }
     pageData.content += '</table>'
-    res.render('products', pageData)
+    res.render('master_template', pageData)
 })
 
 app.get('/seasons', function (req, res) {
@@ -48,14 +57,6 @@ app.get('/seasons', function (req, res) {
     pageData.title = 'Exercise 2'
     pageData.description = 'EJS Template Engine'
     pageData.author = 'Safaldeep Singh'
-    const navbarLinksData = [
-        { label: 'Home Page', link: '/' },
-        { label: 'Bye Bye', link: '/byebye' },
-        { label: 'chair', link: '/test-html' },
-        { label: 'form_post.html', link: '/form_post.html' },
-        { label: 'products', link: '/products' },
-        { label: 'seasons', link: '/seasons' }
-    ]
     const seasons = [
         { id: 1, name: 'Winter' },
         { id: 2, name: 'Summer' },
@@ -125,6 +126,78 @@ app.post('/form_validate',
 app.get('/test-param/:a/:b',
     function (req, res) {
         res.send(req.params.a + req.params.b)
+    }
+)
+const DB = require('./src/dao')
+
+app.get('/orders', function (request, response) {
+    DB.connect()
+    DB.query('SELECT * from orders', function (orders) {
+        let html = ''
+        html += 'Number of orders: ' + orders.rowCount + '<br>'
+        html += '<table>'
+        html += '<tr>' +
+        '<th>Order #</th>' +
+        '<th>Date</th>' +
+        '<th>Reqd. Date</th>' +
+        '<th>Ship Date</th>' +
+        '<th>Status</th>' +
+        '<th>Comments</th>' +
+        '</tr>'
+        for (let i = 0; i < orders.rowCount; i++) {
+            html += '<tr>' +
+            '<td>' + orders.rows[i].ordernumber + '</td>' +
+            '<td>' + orders.rows[i].orderdate + '</td>' +
+            '<td>' + orders.rows[i].requireddate + '</td>' +
+            '<td>' + orders.rows[i].shippeddate + '</td>' +
+            '<td>' + orders.rows[i].status + '</td>' +
+            '<td>' + orders.rows[i].comments + '</td>' +
+            '</tr>'
+        }
+        html += '</table>'
+
+        // use the page template of course to display the list
+        const pageData = {} // initialize empty object
+        pageData.title = 'Orders List-blabla.com'
+        pageData.description = 'Orders Number and Name'
+        pageData.author = 'The blabla.com team'
+        // send out the html table
+        pageData.content = html
+        pageData.navbarLinks = '<ul class="navbar-nav">'
+        for (let i = 0; i < navbarLinksData.length; i++) {
+            pageData.navbarLinks += '<li class="nav-item">'
+            pageData.navbarLinks += '<a class="nav-link" href="' + navbarLinksData[i].link + '">' + navbarLinksData[i].label + '</a>'
+            pageData.navbarLinks += '</li>'
+        }
+        pageData.navbarLinks += '</ul>'
+        response.render('master_template', pageData)
+        DB.disconnect()
+    })
+})
+
+app.get('/customer_search_id',
+    function (req, res) {
+        DB.connect()
+        const pageData = {}
+        const customerId = req.query.customer_id
+        const sqlQuery = 'select * from customers where customernumber =$1'
+        // const sqlQuery = 'select * from customers where customernumber =$1'
+        const params = [customerId]
+        pageData.content = '<table>'
+        DB.queryParams(sqlQuery, params, (customers) => {
+            // console.log(customers)
+            console.log(customers.rowCount)
+            for (let i = 0; i < customers.rowCount; i++) {
+                pageData.content += '<tr>'
+                pageData.content += '<td>' + customers.rows[i].customernumber + '</td>'
+                pageData.content += '<td>' + customers.rows[i].customername + '</td>'
+                pageData.content += '</tr>'
+            }
+            pageData.content += '</table>'
+            console.log(pageData.content)
+            res.render('customer_results.ejs', pageData)
+        })
+        // DB.disconnect()
     }
 )
 
