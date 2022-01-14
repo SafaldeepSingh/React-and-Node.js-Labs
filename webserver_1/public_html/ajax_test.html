@@ -60,6 +60,21 @@
                         let customers = data.customers;
                         //TO DO display all customters in a table
                         document.getElementById("response_data").innerHTML = "Number of customers:" + customers.length
+                        let html = "<table>"
+                        html += "<tr>"
+                        html += "<th>Customer Number</th>"
+                        html += "<th>LastName</th>"
+                        html += "<th>FirstName</th>"
+                        html += "</tr>"
+                        for (var i = 0; i < customers.length; i++) {
+                            html += "<tr>"
+                            html += "<td>" + customers[i].customernumber + "</td>"
+                            html += "<td>" + customers[i].contactlastname + "</td>"
+                            html += "<td>" + customers[i].customername + "</td>"
+                            html += "<tr>"
+                        }
+                        html += "</table>"
+                        document.getElementById("response_data").innerHTML += "<br>" + html
                         console.log(customers)// show all on client console
                     }
                 },
@@ -257,7 +272,6 @@
                     if (Object.keys(data).length !== 0) {
                         // execute only when code is 200
                         let employees = data.employees;
-                        //TO DO display all customters in a table
                         let html = "<table>"
                         html += "<tr>"
                         html += "<th>Employee Number</th>"
