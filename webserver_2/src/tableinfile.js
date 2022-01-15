@@ -32,7 +32,16 @@ function getRec(filepath, id){
 }
 
 function saveTable(filepath, datas){
-    fs.writeFileSync(filepath,JSON.stringify(datas))
+    return new Promise((resolve, reject) => {
+        fs.writeFile(filepath,JSON.stringify(datas), (err) => {
+            if(err){
+                resolve(err)
+            }else{
+                resolve("Success")
+            }
+        })
+
+    })
 }
 function addRec(filepath, newData){
     return new Promise((resolve, reject) => {

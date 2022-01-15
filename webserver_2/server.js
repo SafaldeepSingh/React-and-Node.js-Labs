@@ -31,11 +31,12 @@ app.get('/users/:id', (req, res) =>{
 })
 
 app.post('/users', (req,res) => {
-    const newUser = {
-        id: req.body.id,
-        userName : req.body.userName,
-        age : req.body.age
-}
+//     const newUser = {
+//         id: req.body.id,
+//         userName : req.body.userName,
+//         age : req.body.age
+// }
+    const newUser = JSON.parse(req.body.user)
     dao.addRec(filepath, newUser).then(status => {
         if(status!="Success"){
             res.status(500)
@@ -48,11 +49,26 @@ app.post('/users', (req,res) => {
     })
 })
 
+app.post('/users/save', (req,res) => {
+    const users = JSON.parse(req.body.users)
+    dao.saveTable(filepath, users).then(status => {
+        if(status!="Success"){
+            res.status(500)
+            res.send("Something went wrong")
+            return
+        }
+        res.status(200)
+        res.send("Successfully Saved")
+
+    })
+})
+
+
 app.put('/users/:id', (req,res) => {
     const newData = {
         id:parseInt(req.params.id),
         userName: req.body.userName,
-        age: req.body.age
+        age: parseInt(req.body.age)
     }
     dao.updateRec(filepath, newData).then(status => {
         if(status!="Success"){

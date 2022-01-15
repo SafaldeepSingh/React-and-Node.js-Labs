@@ -5,9 +5,9 @@ const path = require('path')
 const assert = require('assert')
 
 const filepath = path.join(__dirname,'users.json')
-myModule.getTable(filepath).then(data => {
-    console.log(data);
-}).catch(error => console.log(error))
+// myModule.getTable(filepath).then(data => {
+//     console.log(data);
+// }).catch(error => console.log(error))
 
 // myModule.getRec(filepath,100).then(record => {
 //     console.log(record)
@@ -30,7 +30,7 @@ const datas = [
         "age": 99
     }
 ]
-// myModule.saveTable(filepath,datas)
+myModule.saveTable(filepath,datas)
 const data =     {
     "id": 13,
     "userName": "pma",
