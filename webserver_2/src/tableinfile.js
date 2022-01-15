@@ -46,6 +46,10 @@ function saveTable(filepath, datas){
 function addRec(filepath, newData){
     return new Promise((resolve, reject) => {
         getTable(filepath).then(data => {
+            for(let i=0; i<data.length ; i++){
+                if(data[i].id == newData.id)
+                    reject("Already Exist")
+            }
             data.push(newData)
             // console.log(data);
             fs.writeFileSync(filepath,JSON.stringify(data))
