@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <h1>this is test</h1>
+    <div id="table"></div>
+    <script>
+        'use strict'
+        const USER_ARRAY = [
+            { id: 1, name: 'Martin', age: 45 },
+            { id: 2, name: 'Pierre', age: 15 },
+            { id: 3, name: 'Josee', age: 14 },
+            { id: 4, name: 'Melanie', age: 32 },
+            { id: 5, name: 'Sonia', age: 24 }
+        ]
+        function func1(object) {
+            return { id: object.id, name: object.name }
+        }
+        let result = USER_ARRAY.map(func1)
+        console.log(result);
+        function func2(object) {
+            return object.age > 16
+        }
+        result = USER_ARRAY.filter(func2)
+        console.log(result);
+        function func3(total, object) {
+            return (total + object.age)
+        }
+        result = USER_ARRAY.reduce(func3, 0)
+        console.log(result / USER_ARRAY.length);
+        let convertToTDs = (object) => {
+            let row = '<tr><td>' + object.id + '</td>'
+            row += '<td>' + object.name + '</td>'
+            row += '<td>' + object.age + '</td></tr>'
+            return row
+        }
+        let html = '<table>'
+        html += '<tr>'
+        html += '<th>ID</th>'
+        html += '<th>NAME</th>'
+        html += '<th>AGE</th>'
+        html += '</tr>'
+
+        html += USER_ARRAY.map(convertToTDs).join('')
+        html += '</table>'
+        document.getElementById("table").innerHTML = html
+    </script>
+</body>
+
+</html>

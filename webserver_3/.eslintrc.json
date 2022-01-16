@@ -1,0 +1,45 @@
+{
+    "extends": "standard",
+    "rules": {
+        "indent": [
+            "error",
+            4
+        ],
+        "spaced-comment": [
+            "error",
+            "always",
+            {
+                "line": {
+                    "markers": [
+                        "/"
+                    ],
+                    "exceptions": [
+                        "-",
+                        "+"
+                    ]
+                },
+                "block": {
+                    "markers": [
+                        "!"
+                    ],
+                    "exceptions": [
+                        "*"
+                    ],
+                    "balanced": true
+                }
+            }
+        ]
+    },
+    "overrides": [
+        {
+            "files": [
+                "**/*.js"
+            ]
+        }
+    ],
+    "env": {
+        "browser": true,
+        "node": true,
+        "es6": true
+    }
+}

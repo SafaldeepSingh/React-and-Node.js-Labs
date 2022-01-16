@@ -31,12 +31,10 @@ app.get('/users/:id', (req, res) =>{
 })
 
 app.post('/users', (req,res) => {
-//     const newUser = {
-//         id: req.body.id,
-//         userName : req.body.userName,
-//         age : req.body.age
-// }
-    const newUser = JSON.parse(req.body.user)
+    // console.log(req.body);
+    // return
+    // const newUser = JSON.parse(req.body.user)
+    const newUser = req.body
     dao.addRec(filepath, newUser).then(status => {
         if(status!="Success"){
             res.status(500)
