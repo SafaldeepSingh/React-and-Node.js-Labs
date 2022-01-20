@@ -1,9 +1,12 @@
 'use strict'
 
 const express = require('express')
+const cors = require('cors')
 const app = express()
 const officeController = require('./src/office')
+app.use(express.urlencoded())
 app.use(express.json())
+app.use(cors())
 
 app.get('/offices', (req, res) => {
     officeController.getAll().then(offices => {
@@ -61,9 +64,11 @@ app.put('/offices/:id', (req, res) => {
         })
     })
 })
-app.delete('offices/:id', (req, res) => {
+app.delete('/offices/:id', (req, res) => {
     const id = parseInt(req.params.id)
+    console.log(id)
     officeController.delete(id).then(status => {
+        console.log('inside delete')
         res.status(200).json({
             status: 'Success'
         })

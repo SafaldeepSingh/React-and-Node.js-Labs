@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offices</title>
+    <style>
+        .office-form div {
+            margin: 10px 5px;
+        }
+
+        .office-form {
+            width: 50%;
+        }
+
+        .office-form div {
+            margin: 10px 5px;
+        }
+
+        .office-form div label,
+        .office-form div input {
+            width: 45%;
+            display: inline-block;
+        }
+
+        td {
+            border: 1px solid black;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>Offices</h2>
+    <p>User Interface- Front End - using API from web_server_3. Make sure server is running at http://localhost:8000</p>
+    <p>Server Message: <b id="server_msg"></b></p>
+    <input type="number" id="office_number">
+    <form class="office-form">
+        <div>
+            <label for="office_code">Office Code</label>
+            <input class="office-form-input" type="number" id="office_code">
+        </div>
+        <div>
+            <label for="address_line_1">Address Line 1</label>
+            <input class="office-form-input" type="text" id="address_line_1">
+        </div>
+        <div>
+            <label for="address_line_2">Address Line 2</label>
+            <input class="office-form-input" type="text" id="address_line_2">
+        </div>
+        <div>
+            <label for="city">City</label>
+            <input class="office-form-input" type="text" id="city">
+        </div>
+        <div>
+            <label for="state">State</label>
+            <input class="office-form-input" type="text" id="state">
+        </div>
+        <div>
+            <label for="country">Country</label>
+            <input class="office-form-input" type="text" id="country">
+        </div>
+        <div>
+            <label for="postal_code">Postal Code</label>
+            <input class="office-form-input" type="number" id="postal_code">
+        </div>
+        <div>
+            <label for="phone">Phone</label>
+            <input class="office-form-input" type="text" id="phone">
+        </div>
+        <div>
+            <label for="territory">Territory</label>
+            <input class="office-form-input" type="text" id="territory">
+        </div>
+        <div>
+            <button type="button" id="save_btn">Save </button>
+            <button type="button" id="delete_btn">Delete </button>
+            <button type="button" id="clear_btn">Clear form to Add a new Office </button>
+        </div>
+        <br>
+    </form>
+    <div>
+        <button type="button" id="get_all_btn">Get all offices</button>
+    </div>
+    <div id="all_offices"></div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        'use strict'
+        // $(document).ajaxError(function (event, xhr, options, exc) {
+        //     $("#status").html("An AJAX error occurred: " + xhr.status + " " + xhr.text_status);
+        // });
+
+        $('#clear_btn').click(() => {
+            $('.office-form-input').val('')
+            $('#office_number').val('')
+        })
+        $('#office_number').change(() => {
+            let officeCode = $('#office_number').val()
+            $.ajax({
+                url: 'http://localhost:8000/offices/' + officeCode,
+                type: 'GET',
+                dataType: 'json',
+                data: {},// data to send in the body of the request
+
+                success: function (result, textStatus, jqXHR) {
+                    // OK code 2xx display the returned message
+                    let serverMsg = 'OK'
+                    // $('#server_msg').html(textStatus)
+                    console.log(textStatus);
+                    if (result.status == 'Success') {
+                        let office = result.office
+                        serverMsg += ' Success'
+                        $('#office_code').val(office.officecode)
+                        $('#address_line_1').val(office.addressline1)
+                        $('#address_line_2').val(office.addressline2)
+                        $('#city').val(office.city)
+                        $('#state').val(office.state)
+                        $('#country').val(office.country)
+                        $('#postal_code').val(office.postalcode)
+                        $('#phone').val(office.phone)
+                        $('#territory').val(office.territory)
+
+                    } else {
+                        serverMsg += ' Failed'
+                    }
+                    $('#server_msg').html(serverMsg)
+
+                },
+
+                error: function (xhr, textStatus, errorThrown) {
+                    // will not be executed if .ajaxError above catches all errors before this
+                    // any error code returned other than 2xx
+                    // example display response code in a status div
+                    $('#server_msg').html(errorThrown)
+
+                }
+            });
+
+        })
+        $('#save_btn').click(() => {
+            let officeCode = $('#office_number').val()
+            if (officeCode == '') {
+                //ADD OFFICE
+                let office = validateForm()
+                if (office == {}) return
+                $.ajax({
+                    url: "http://localhost:8000/offices",
+                    type: "POST",
+                    dataType: 'json',
+                    data: office,// data to send in the body of the request
+
+                    success: function (result) {
+                        $('#server_msg').html('OK')
+                        if (result.status == 'Success')
+                            alert("New Office Added Successfully")
+                        else
+                            alert("Something Went Wrong")
+
+                    },
+
+                    error: function (xhr, textStatus, errorThrown) {
+                        // will not be executed if .ajaxError above catches all errors before this
+                        // any error code returned other than 2xx
+                        // example display response code in a status div
+                        $('#server_msg').html(errorThrown)
+                    }
+                });
+            } else {
+                let office = validateForm()
+                console.log(office);
+                if (office == {}) return
+                $.ajax({
+                    url: "http://localhost:8000/offices/" + officeCode,
+                    type: "PUT",
+                    dataType: 'json',
+                    data: office,// data to send in the body of the request
+
+                    success: function (result) {
+                        $('#server_msg').html('OK')
+                        if (result.status == 'Success')
+                            alert("Office " + officeCode + " Updated Successfully")
+                        else
+                            alert("Something Went Wrong")
+
+                    },
+
+                    error: function (xhr, textStatus, errorThrown) {
+                        // will not be executed if .ajaxError above catches all errors before this
+                        // any error code returned other than 2xx
+                        // example display response code in a status div
+                        $('#server_msg').html(errorThrown)
+                    }
+                });
+
+            }
+        })
+        let validateForm = () => {
+            let office = {
+                code: parseInt($('#office_code').val()),
+                city: $('#city').val(),
+                phone: $('#phone').val(),
+                addressline1: $('#address_line_1').val(),
+                addressline2: $('#address_line_2').val(),
+                state: $('#state').val(),
+                country: $('#country').val(),
+                postalcode: $('#postal_code').val(),
+                territory: $('#territory').val()
+            }
+            if (anyEmpty(office.code, office.city, office.phone, office.addressline1, office.addressline2, office.state, office.country, office.postalcode, office.territory)) {
+                return {}
+            }
+            return office
+        }
+        let anyEmpty = (...fields) => {
+            for (let i = 0; i < fields.length; i++) {
+                if (fields[i] == '')
+                    return true
+            }
+        }
+        $('#delete_btn').click(() => {
+            let officeCode = $('#office_number').val()
+            if (officeCode == '')
+                return;
+            $.ajax({
+                url: "http://localhost:8000/offices/" + officeCode,
+                type: "DELETE",
+                data: {},// data to send in the body of the request
+
+                success: function (result) {
+                    // OK code 2xx display the returned message
+                    $("#server_msg").html('OK')
+                    if (result.status == 'Success')
+                        alert("Office " + officeCode + " deleted Successfully")
+                    else
+                        alert("Something Went Wrong")
+                },
+
+                error: function (xhr, textStatus, errorThrown) {
+                    // will not be executed if .ajaxError above catches all errors before this
+                    // any error code returned other than 2xx
+                    // example display response code in a status div
+                    $('#server_msg').html(errorThrown)
+                }
+            });
+
+        })
+        $('#get_all_btn').click(() => {
+            $.ajax({
+                url: "http://localhost:8000/offices",
+                type: "GET",
+                data: {},// data to send in the body of the request
+
+                success: function (result) {
+                    let serverMsg = 'OK'
+                    if (result.status == 'Success') {
+                        serverMsg += ' Success'
+                        let offices = result.offices
+                        offices.sort(function (a, b) { return a.officecode - b.officecode })
+                        $('#all_offices').html(getOfficesHTML(offices))
+                    } else {
+                        serverMsg += ' Failed'
+                    }
+                    $('#server_msg').html(serverMsg)
+                },
+
+                error: function (xhr, textStatus, errorThrown) {
+                    // will not be executed if .ajaxError above catches all errors before this
+                    // any error code returned other than 2xx
+                    // example display response code in a status div
+                    $('#server_msg').html(errorThrown)
+                }
+            });
+
+        })
+        let getOfficesHTML = (offices) => {
+            let html = "<p>Number of offices: " + offices.length + "</p>"
+            html += "<table>"
+            let officesHTML = offices.map((office) => {
+                let rowHTML = '<tr>'
+                rowHTML += '<td>' + office.officecode + '</td>'
+                rowHTML += '<td>' + office.addressline1 + '</td>'
+                rowHTML += '<td>' + office.addressline2 + '</td>'
+                rowHTML += '<td>' + office.city + '</td>'
+                rowHTML += '<td>' + office.state + '</td>'
+                rowHTML += '<td>' + office.country + '</td>'
+                rowHTML += '<td>' + office.postalcode + '</td>'
+                rowHTML += '<td>' + office.phone + '</td>'
+                rowHTML += '<td>' + office.territory + '</td>'
+                rowHTML += '</tr>'
+                return rowHTML
+            })
+            html += officesHTML.join('')
+            html += "</table>"
+            return html
+        }
+    </script>
+</body>
+
+</html>
