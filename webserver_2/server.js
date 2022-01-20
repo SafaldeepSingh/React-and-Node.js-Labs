@@ -78,6 +78,17 @@ app.put('/users/:id', (req,res) => {
         res.send("Successfully Updated")
     })
 })
+app.delete('/users/:id', (req,res) => {
+    dao.deleteRec(filepath, parseInt(req.params.id)).then(status => {
+        if(status!="Success"){
+            res.status(500)
+            res.send("Record Not Found")
+            return
+        }
+        res.status(200)
+        res.send("Successfully Deleted")
+    })
+})
 
 
 app.listen(8000, () => {

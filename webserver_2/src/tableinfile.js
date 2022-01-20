@@ -81,10 +81,30 @@ function updateRec(filepath, newData){
 
 }
 
+function deleteREC (fileName, id) {
+    return new Promise((resolve, reject) => {
+        getTable(fileName).then(data => {
+            let recordExist = data.reduce((total, element)=>{
+                return total || (element.id == id)
+            }, false)
+            if(!recordExist)
+                reject(new Error("Doesnt Exist"))
+            let newData = data.filter((element) => {
+                return element.id!= id
+            })
+            saveTable(fileName, newData).then(status =>{
+                resolve("Success")
+            }).catch(error => reject(new Error(error)))
+        })
+    })
+
+}
+
 module.exports = {
     getTable: getTable,
     getRec: getRec,
     saveTable: saveTable,
     addRec: addRec,
-    updateRec: updateRec
+    updateRec: updateRec,
+    deleteRec: deleteREC
 }
