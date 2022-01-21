@@ -16,8 +16,8 @@ class Page extends React.Component {
             <div>
                 <Header companyName="blabla.com"/>
                 <p>Hello World !</p>
-                <SelectList heading="Provinces" array={provinces}/>
-                <SelectList heading="Countries" array={countries}/>
+                <SelectList name="provinces" array={provinces}/>
+                <SelectList name="countries" array={countries}/>
                 <Footer authorName="Safaldeep Singh"/>
             </div>
         )
