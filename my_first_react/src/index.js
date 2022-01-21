@@ -3,21 +3,13 @@ import ReactDOM from 'react-dom'
 import './index.css'
 // import App from './App'
 import SelectList from './SelectList'
+import Footer from './Footer'
+import Header from './Header'
 import reportWebVitals from './reportWebVitals'
 const provinces = [{ code: 'QC', name: 'Quebec' }, { code: 'ON', name: 'Ontario' }, { code: 'NB', name: 'New-Brunswick' }]
 
 const countries = [{ code: 'CA', name: 'Canada' }, { code: 'US', name: 'USA' }, { code: 'IN', name: 'India' }, { code: 'MX', name: 'Mexixo' }]
 
-class Header extends React.Component {
-    render () {
-        return (<p>This is the Header component</p>)
-    }
-}
-class Footer extends React.Component {
-    render () {
-        return (<p>This is the Footer component</p>)
-    }
-}
 class Page extends React.Component {
     render () {
         return (
@@ -26,7 +18,7 @@ class Page extends React.Component {
                 <p>Hello World !</p>
                 <SelectList heading="Provinces" array={provinces}/>
                 <SelectList heading="Countries" array={countries}/>
-                <Footer authorName="Stéphane Lapointe"/>
+                <Footer authorName="Safaldeep Singh"/>
             </div>
         )
     }
