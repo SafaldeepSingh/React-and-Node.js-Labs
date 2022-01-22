@@ -73,6 +73,21 @@ class Offices extends React.Component {
         )
     }
 
+    changeOfficeIndex = (action) => {
+        let newIndex
+        if(action === '-'){
+            if(this.state.offices_index == 0)
+                newIndex = this.state.offices_count-1
+            else
+            newIndex = this.state.offices_index - 1
+            this.setState({ offices_index: newIndex })
+        }else
+            if(this.state.offices_index == this.state.offices_count-1)
+                newIndex = 0
+            else
+                newIndex = this.state.offices_index + 1
+    this.setState ({ offices_index: newIndex })
+    }
 
     // display the offices table
     render() {
@@ -80,17 +95,20 @@ class Offices extends React.Component {
             return <div><b>{this.state.error.message}</b></div>;
         }else if(this.state.isLoaded){
             if(this.state.offices_count!==0){
-                const offices = this.state.offices_data.map((element)=> {
-                    return (<div>
-                        <Office office={element}/>
-                        <hr/>
-                    </div>)
-                })
+                // const offices = this.state.offices_data.map((element)=> {
+                //     return (<div>
+                //         <Office key={element.officecode} office={element}/>
+                //         <hr/>
+                //     </div>)
+                // })
                 // dress table not empty
                 return (
                     <div>
                         <b>List of offices from server localhost:8000/offices</b>
-                        {offices}
+                        <Office office={this.state.offices_data[this.state.offices_index]} />
+                        <button onClick={() => this.changeOfficeIndex('-')}>Previous</button>
+                        <button  onClick={() => this.changeOfficeIndex('+')}>Next</button>
+                        {/* {offices} */}
                     </div>
                 )
             }else{
