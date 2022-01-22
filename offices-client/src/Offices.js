@@ -76,15 +76,15 @@ class Offices extends React.Component {
     changeOfficeIndex = (action) => {
         let newIndex
         if(action === '-'){
-            if(this.state.offices_index == 0)
-                newIndex = this.state.offices_count-1
-            else
+            // if(this.state.offices_index == 0)
+            //     newIndex = this.state.offices_count-1
+            // else
             newIndex = this.state.offices_index - 1
             this.setState({ offices_index: newIndex })
         }else
-            if(this.state.offices_index == this.state.offices_count-1)
-                newIndex = 0
-            else
+            // if(this.state.offices_index == this.state.offices_count-1)
+            //     newIndex = 0
+            // else
                 newIndex = this.state.offices_index + 1
     this.setState ({ offices_index: newIndex })
     }
@@ -106,8 +106,8 @@ class Offices extends React.Component {
                     <div>
                         <b>List of offices from server localhost:8000/offices</b>
                         <Office office={this.state.offices_data[this.state.offices_index]} />
-                        <button onClick={() => this.changeOfficeIndex('-')}>Previous</button>
-                        <button  onClick={() => this.changeOfficeIndex('+')}>Next</button>
+                        <button className={this.state.offices_index===0?'d-none':''} onClick={() => this.changeOfficeIndex('-')}>Previous</button>
+                        <button  className={this.state.offices_index===this.state.offices_count-1?'d-none':''}  onClick={() => this.changeOfficeIndex('+')}>Next</button>
                         {/* {offices} */}
                     </div>
                 )
