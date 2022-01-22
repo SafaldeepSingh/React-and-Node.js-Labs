@@ -5,7 +5,7 @@ const DB = require('./../dao')
 function getAll () {
     return new Promise((resolve, reject) => {
         DB.connect()
-        DB.query('Select * from offices', (offices) => {
+        DB.query('Select * from offices order by officecode', (offices) => {
             resolve(offices.rows)
             DB.disconnect()
         })
@@ -24,10 +24,16 @@ function get (id) {
 
 function add (office) {
     return new Promise((resolve, reject) => {
-        const sql = 'Insert into offices (officecode, city, phone, addressline1, addressline2, state, country, postalcode, territory)' +
+        DB.connect()
+        let sql = 'Select * from offices where officecode = $1'
+        DB.queryParams(sql, [office.code], (data) => {
+            if (data.rowCount) {
+                reject(new Error('Office with this Id Already Exist'))
+            }
+        })
+        sql = 'Insert into offices (officecode, city, phone, addressline1, addressline2, state, country, postalcode, territory)' +
          'values($1,$2,$3,$4,$5,$6,$7,$8,$9)'
         const params = [office.code, office.city, office.phone, office.addressline1, office.addressline2, office.state, office.country, office.postalcode, office.territory]
-        DB.connect()
         DB.queryParams(sql, params, (data) => {
             resolve('Success')
             DB.disconnect()

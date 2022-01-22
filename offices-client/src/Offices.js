@@ -106,8 +106,8 @@ class Offices extends React.Component {
                     <div>
                         <b>List of offices from server localhost:8000/offices</b>
                         <Office office={this.state.offices_data[this.state.offices_index]} />
-                        <button className={this.state.offices_index===0?'d-none':''} onClick={() => this.changeOfficeIndex('-')}>Previous</button>
-                        <button  className={this.state.offices_index===this.state.offices_count-1?'d-none':''}  onClick={() => this.changeOfficeIndex('+')}>Next</button>
+                        <button className={(this.state.offices_index===0?'d-none':'')+ ' btn'} onClick={() => this.changeOfficeIndex('-')}>Previous</button>
+                        <button  className={(this.state.offices_index===this.state.offices_count-1?'d-none':'') + ' btn'}  onClick={() => this.changeOfficeIndex('+')}>Next</button>
                         {/* {offices} */}
                     </div>
                 )

@@ -1,9 +1,10 @@
 import React from 'react'
+import styles from './Offices.module.css'
 
 class Office extends React.Component{
     render() {
         return (
-            <table>
+            <table className={styles.table}>
             <tbody>
             <tr><th>Office Code</th><td>{this.props.office.officecode}</td></tr>
             <tr><th>Address Line 1</th><td>{this.props.office.addressline1}</td></tr>

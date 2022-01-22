@@ -5,6 +5,7 @@ body {
         sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    background-color: darkgrey;
 }
 
 code {
@@ -12,15 +13,10 @@ code {
         monospace;
 }
 
-.d-none {
-    display: none;
+.text-center {
+    text-align: center;
 }
 
-.btn {
-    cursor: pointer;
-    margin: 10px;
-    background-color: darkred;
-    color: white;
-    border-radius: 100px;
-    padding: 10px 25px;
+.d-none {
+    display: none;
 }
