@@ -5,7 +5,7 @@ class Footer extends React.Component {
         if (!this.props.authorName) {
             return <p>Error in Footer Component: Author Name not Passes</p>
         }
-        return (<p className={styles.footer}>Author:- {this.props.authorName}</p>)
+        return (<p className={styles.footer}>&copy;{this.props.authorName}</p>)
     }
 }
 

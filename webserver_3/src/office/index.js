@@ -60,6 +60,7 @@ function deleteOne (id) {
     return new Promise((resolve, reject) => {
         DB.connect()
         DB.queryParams('delete from offices where officecode = $1', [id], (data) => {
+            if (data == null) { reject(new Error('DB Error')) }
             resolve('Success')
             DB.disconnect()
         })
