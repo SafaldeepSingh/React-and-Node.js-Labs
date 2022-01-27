@@ -1,0 +1,18 @@
+.header {
+    background-color: #4682b4;
+    color: white;
+    height: 13vh;
+}
+
+.header h1 {
+    display: inline-block;
+    margin: 0;
+    padding: 3vh 10px;
+    vertical-align: text-bottom;
+}
+
+.header img {
+    height: 100%;
+    width: auto;
+    vertical-align: top;
+}
