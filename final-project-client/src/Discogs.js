@@ -8,7 +8,9 @@ class Discogs extends React.Component{
             searchString: '',
             searchResults : null,
             playlist: null,
-            pagination: null
+            pagination: null,
+            resultsLoaded: null,
+            errorMsg: null
         }
     }
     componentDidMount = () => {
@@ -28,15 +30,18 @@ class Discogs extends React.Component{
             searchString: event.target.value
         })
     }
-    addTrack = (index) => {
+    addTrack = (id) => {
         // console.log("add "+index);
         // console.log("genre "+document.getElementById('genre-add-track-'+index).value);
-        const result = this.state.searchResults[parseInt(index)]
-        const playListId = document.getElementById('genre-add-track-'+index).value
+        // const result = this.state.searchResults[parseInt(index)]
+        const result = this.state.searchResults.filter(element => {
+            return element.id === id
+        })[0]
+        const playListId = document.getElementById('genre-add-track-'+id).value
         const playlist = this.state.playlist.reduce((total,playlist) => {
-            return total + (playlist.id == playListId?playlist.title:'')
+            return total + (playlist.id === parseInt(playListId)?playlist.title:'')
         }, '')
-        if(document.getElementById('add-to-playlist-' + result.master_id).getAttribute('disabled')){
+        if(document.getElementById('add-to-playlist-' + id).getAttribute('disabled')){
             console.log('event')
             return
         }
@@ -66,14 +71,14 @@ class Discogs extends React.Component{
             uri: 'http://www.discogs.com'+result.uri,
             master_id: result.master_id,
         }
-        console.log(track);
+        // console.log(track);
         const trackInput = document.getElementById('tracks') 
         const tracks = JSON.parse(trackInput.value)
-        console.log('tracks', tracks);
+        // console.log('tracks', tracks);
         tracks.push(track)
         trackInput.value = JSON.stringify(tracks)
         trackInput.click()
-        const addButton = document.getElementById('add-to-playlist-' + track.master_id)
+        const addButton = document.getElementById('add-to-playlist-' + result.id)
         addButton.innerHTML 
         = `<span>Added to Playlist<i class='fas fa-check ml-2' /></span>`
         addButton.classList.remove('btn-primary')
@@ -84,29 +89,43 @@ class Discogs extends React.Component{
  
     }
     search = (page = null) => {
-        if(this.state.searchString === '' && page === null){
-            console.log('empty string')
-            return
-        }
+        this.setState({resultsLoaded: false})
         const perPageLimit = 5
         const httpString = 'https://api.discogs.com/database/search?key=hybciPmmpRxvHZxzocYQ'+
         '&secret=oCrCIqLZtAdOXocIIWkaKOVOFUqPCYzW&artist='+this.state.searchString+'&country=canada%22'+
         '&per_page=' + perPageLimit + (page?'&page='+page:'')
         fetch(httpString,{
             method: 'GET'
-        }).then(response => response.json())
+        }).then(response => 
+        {
+            if(!response.ok)
+                throw new Error('Network Problem')
+            return response.json()
+        })
         .then(data => {
             console.log(data);
             this.setState({
                 searchResults: data.results,
-                pagination: data.pagination
+                pagination: data.pagination,
+                resultsLoaded: true
+            })
+        }).catch(error => {
+            this.setState({
+                resultsLoaded: true,
+                errorMsg: 'Problem Fetching Data'
             })
         })
     }
     resultsHTML = () => {
         const searchResults = this.state.searchResults
-        if(!searchResults){
-            return <div></div>
+        if(this.state.resultsLoaded == null){
+            return ''
+        }
+        if(this.state.resultsLoaded === false){
+            return <h5 className='m-3 pl-2'>Loading...</h5>
+        }
+        if(this.state.resultsLoaded && this.state.errorMsg){
+            return <h5 className='m-3 pl-2' style={{color: 'darkred'}}>{this.state.errorMsg}</h5>
         }
         if(this.state.pagination.items === 0){
             return <h5 className='m-3 pl-2'>No Results Found</h5>
@@ -116,7 +135,7 @@ class Discogs extends React.Component{
                 return (<option key={playlist.id} value={playlist.id}>{playlist.title}</option>)
             })
             return (
-                <div className='list-group-item' key={index}>
+                <div className='list-group-item' key={result.id}>
                     <div className='container-fluid'>
                         <div className='row'>
                             <div className='col-3'>
@@ -134,13 +153,13 @@ class Discogs extends React.Component{
                             </div>
                             <div className='col-4 text-right'>
                                 <span>
-                                    <select id={'genre-add-track-' + index} 
+                                    <select id={'genre-add-track-' + result.id} 
                                         className="form-control form-control-sm mb-3">
                                         {playlistOptions}
                                     </select>    
                                     <button className='btn btn-primary' 
-                                        id={'add-to-playlist-' + result.master_id} 
-                                        onClick={() => this.addTrack(index)}>
+                                        id={'add-to-playlist-' + result.id} 
+                                        onClick={() => this.addTrack(result.id)}>
                                         Add to Playlist
                                         <i className='fas fa-add ml-2'></i>
                                     </button>
